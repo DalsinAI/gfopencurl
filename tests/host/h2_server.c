@@ -13,7 +13,7 @@
  * shared a connection. A request with an x-close header ends its connection
  * (GOAWAY, sent before the answer), so the next request needs a new one.
  * One thread per connection, blocking I/O.
- * MIT, Copyright (c) 2026 AmigaChrome Team. */
+ * MIT, Copyright (c) 2026 AmiCradle Team. */
 #define _GNU_SOURCE
 #include <nghttp2/nghttp2.h>
 #include <openssl/err.h>

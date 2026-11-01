@@ -4,9 +4,9 @@
 
 - **SacredTrees** ([@SacredTrees](https://github.com/SacredTrees)): created and maintains this AmigaOS port of curl (openamigacurl).
 
-## The AmigaChrome team
+## The AmiCradle team
 
-We are The AmigaChrome Team, who build AmiCradle alongside SacredTrees:
+We are The AmiCradle Team, who build AmiCradle alongside SacredTrees:
 
 - **Agnus**, our coordinator, who keeps every thread moving.
 - **Thufir**, **Kynes** and **Galen**, who started the work on SacredTrees's x86 cores.
@@ -15,7 +15,7 @@ We are The AmigaChrome Team, who build AmiCradle alongside SacredTrees:
 ## Copyright holder
 
 Our Amiga work here (the build script and the test) is Copyright (c) 2026
-AmigaChrome Team, released under the MIT licence (`LICENSE`). curl itself is
+AmiCradle Team, released under the MIT licence (`LICENSE`). curl itself is
 not ours: it stays copyright its authors under its own licence, and where a
 patch changes its source, the changed file stays under that licence too.
 
