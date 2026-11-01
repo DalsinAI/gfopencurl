@@ -1,10 +1,10 @@
 #!/bin/sh
 # openamigacurl in the cloud: libcurl (with nghttp2) and curltest for the 68040 with the
-# OpenAmigaGCC release toolchain and OpenNDK, no vendor headers anywhere.
+# GFOpenAmigaGCC release toolchain and GFOpenNDK, no vendor headers anywhere.
 # MIT, Copyright (c) 2026 AmigaChrome Team.
 #
 #   TOOLCHAIN_DIR  an unpacked openamigagcc-*-x86_64-linux folder
-#   OPENNDK        an OpenNDK folder holding the bsdsocket headers
+#   OPENNDK        a GFOpenNDK folder holding the bsdsocket headers
 #   OPENTLS_SRC    an openamigatls checkout (default ../openamigatls)
 #   TARBALLS       holds curl-8.22.0.tar.xz, nghttp2-1.70.0.tar.xz and
 #                  zlib-1.3.1.tar.xz (default ./tarballs); build.sh checks
@@ -38,7 +38,7 @@ cp "$W/zlib-1.3.1/zlib.h" "$W/zlib-1.3.1/zconf.h" "$W/deps/include/"
 OS32_GCC16="$W/stove" NDK_INCLUDE="$NDK/Include_H" OPENTLS_INCLUDE="$OT/include" \
     DEPS_PREFIX="$W/deps" PREFIX="$W/out" TARBALLS="$TARBALLS" JOBS=${JOBS:-4} \
     "$HERE/build.sh" > "$W/build.log" 2>&1 || { tail -40 "$W/build.log"; exit 1; }
-# the OpenTLS backend and the network headers build with no warning
+# the GFOpenTLS backend and the network headers build with no warning
 if grep -E '(opentls\.c|Include_H/).*(warning|error)' "$W/build.log"; then exit 1; fi
 tail -1 "$W/build.log"
 # HTTP/2 is in: curl's configure found nghttp2, and curltest links it

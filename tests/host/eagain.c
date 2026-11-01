@@ -1,5 +1,5 @@
 /* openamigacurl host test: an LD_PRELOAD shim that makes every Nth send or
- * recv answer EAGAIN and cuts the rest short, so the OpenTLS backend's
+ * recv answer EAGAIN and cuts the rest short, so the GFOpenTLS backend's
  * would-block paths run. MIT, Copyright (c) 2026 AmigaChrome Team. */
 #define _GNU_SOURCE
 #include <dlfcn.h>

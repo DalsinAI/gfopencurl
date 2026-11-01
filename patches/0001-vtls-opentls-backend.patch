@@ -5,7 +5,7 @@ diff -ruN a/CMakeLists.txt b/CMakeLists.txt
  cmake_dependent_option(CURL_USE_WOLFSSL "Enable wolfSSL for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
  cmake_dependent_option(CURL_USE_GNUTLS "Enable GnuTLS for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
  cmake_dependent_option(CURL_USE_RUSTLS "Enable Rustls for SSL/TLS (experimental)" OFF CURL_ENABLE_SSL OFF)
-+cmake_dependent_option(CURL_USE_OPENTLS "Enable OpenTLS (opentls.library) for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
++cmake_dependent_option(CURL_USE_OPENTLS "Enable GFOpenTLS (gfopentls.library) for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
  
  if(WIN32 OR
     CURL_USE_SCHANNEL OR
@@ -31,10 +31,10 @@ diff -ruN a/CMakeLists.txt b/CMakeLists.txt
  endif()
  
 +if(CURL_USE_OPENTLS)
-+  # opentls.library's headers (openamigatls include/); on hosts other than
++  # gfopentls.library's headers (openamigatls include/); on hosts other than
 +  # AmigaOS, OPENTLS_LIBRARY names its host build (libopentls.a).
-+  set(OPENTLS_INCLUDE_DIR "" CACHE PATH "OpenTLS include directory")
-+  set(OPENTLS_LIBRARY "" CACHE STRING "OpenTLS host libraries")
++  set(OPENTLS_INCLUDE_DIR "" CACHE PATH "GFOpenTLS include directory")
++  set(OPENTLS_LIBRARY "" CACHE STRING "GFOpenTLS host libraries")
 +  if(OPENTLS_INCLUDE_DIR)
 +    include_directories(SYSTEM ${OPENTLS_INCLUDE_DIR})
 +  endif()
@@ -56,7 +56,7 @@ diff -ruN a/CMakeLists.txt b/CMakeLists.txt
  curl_add_if("wolfSSL"       _ssl_enabled AND USE_WOLFSSL)
  curl_add_if("GnuTLS"        _ssl_enabled AND USE_GNUTLS)
  curl_add_if("Rustls"        _ssl_enabled AND USE_RUSTLS)
-+curl_add_if("OpenTLS"       _ssl_enabled AND USE_OPENTLS)
++curl_add_if("GFOpenTLS"       _ssl_enabled AND USE_OPENTLS)
  
  if(_items)
    list(SORT _items CASE INSENSITIVE)
@@ -116,7 +116,7 @@ diff -ruN a/lib/amigaos.h b/lib/amigaos.h
   ***************************************************************************/
  #include "curl_setup.h"
  
-+/* With AmiSSL or OpenTLS on OS3, the program opens bsdsocket.library and
++/* With AmiSSL or GFOpenTLS on OS3, the program opens bsdsocket.library and
 +   sets SocketBase itself, in each task that calls curl. */
  #if defined(__AMIGA__) && defined(HAVE_PROTO_BSDSOCKET_H) && \
 -  (!defined(USE_AMISSL) || defined(__amigaos4__))
@@ -131,7 +131,7 @@ diff -ruN a/lib/curl_config-cmake.h.in b/lib/curl_config-cmake.h.in
  /* if Rustls is enabled */
  #cmakedefine USE_RUSTLS 1
  
-+/* if OpenTLS (opentls.library) is enabled */
++/* if GFOpenTLS (gfopentls.library) is enabled */
 +#cmakedefine USE_OPENTLS 1
 +
  /* if wolfSSL is enabled */
@@ -179,14 +179,14 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 + ***************************************************************************/
 +
 +/*
-+ * Source file for the OpenTLS backend: opentls.library, the Open Amiga
++ * Source file for the GFOpenTLS backend: gfopentls.library, the GFOpenAmiga
 + * platform's TLS client (BearSSL inside). https://github.com/DalsinAI/openamigatls
 + *
-+ * OpenTLS moves its bytes through an I/O hook, so the TLS records go
++ * GFOpenTLS moves its bytes through an I/O hook, so the TLS records go
 + * through the connection filter below this one, as with every other
 + * backend. On AmigaOS the library is opened here, the first time a
 + * connection needs it, under a base of its own (Curl_OpenTLSBase), so a
-+ * program that also uses opentls.library keeps its own OpenTLSBase.
++ * program that also uses gfopentls.library keeps its own OpenTLSBase.
 + *
 + * Sessions are resumed through curl's session cache: one OTSession per
 + * peer key (host, port, verify settings, trust store, TLS versions and
@@ -211,11 +211,11 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +#ifdef __amigaos__
 +#define OPENTLS_BASE_NAME Curl_OpenTLSBase
 +#include <proto/exec.h>
-+#include <proto/opentls.h>
++#include <proto/gfopentls.h>
 +#else
 +#include <utility/hooks.h>
-+#include <libraries/opentls.h>
-+#include <clib/opentls_protos.h>
++#include <libraries/gfopentls.h>
++#include <clib/gfopentls_protos.h>
 +#endif
 +
 +#include "urldata.h"
@@ -347,7 +347,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  if(base)
 +    return TRUE;
 +  /* opened outside the lock: OpenLibrary() may load it from disk */
-+  base = OpenLibrary((CONST_STRPTR)"opentls.library", 1);
++  base = OpenLibrary((CONST_STRPTR)"gfopentls.library", 1);
 +  if(!base)
 +    return FALSE;
 +  if(base->lib_Version == 1 && base->lib_Revision < 2) {
@@ -406,7 +406,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  case CURL_SSLVERSION_TLSv1_3:
 +    return OT_TLS13;
 +  default:
-+    failf(data, "OpenTLS: unsupported minimum TLS version value");
++    failf(data, "GFOpenTLS: unsupported minimum TLS version value");
 +    *result = CURLE_SSL_CONNECT_ERROR;
 +    return 0;
 +  }
@@ -446,7 +446,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +    return result;
 +  max = ot_max_version(conn_config->version_max);
 +  if(conn_config->CApath)
-+    infof(data, "OpenTLS: CA path %s is not used; set a CA file",
++    infof(data, "GFOpenTLS: CA path %s is not used; set a CA file",
 +          conn_config->CApath);
 +
 +  if(!ca_blob) {
@@ -494,7 +494,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  config.CAFile = (STRPTR)entry->cafile;
 +  entry->ctx = OT_NewContext(&config, &err);
 +  if(!entry->ctx) {
-+    failf(data, "OpenTLS: no context: %s", (const char *)OT_ErrorString(err));
++    failf(data, "GFOpenTLS: no context: %s", (const char *)OT_ErrorString(err));
 +    curlx_free(entry->cafile);
 +    curlx_free(entry);
 +    return err == OTERR_NOMEM ? CURLE_OUT_OF_MEMORY :
@@ -504,7 +504,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  if(ca_blob) {
 +    err = OT_AddTrustPEM(entry->ctx, ca_blob->data, (LONG)ca_blob->len);
 +    if(err != OTERR_OK) {
-+      failf(data, "OpenTLS: CA blob not read: %s",
++      failf(data, "GFOpenTLS: CA blob not read: %s",
 +            (const char *)OT_ErrorString(err));
 +      ot_entry_release(entry);
 +      return CURLE_SSL_CACERT_BADFILE;
@@ -549,7 +549,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  const char *text = (const char *)OT_GetErrorText(backend->conn);
 +  if(!text || !*text)
 +    text = (const char *)OT_ErrorString(err);
-+  failf(data, "OpenTLS: %s: %s (%ld)", what, text, (long)err);
++  failf(data, "GFOpenTLS: %s: %s (%ld)", what, text, (long)err);
 +}
 +
 +/* the session cache's destructor for a peer's OTSession */
@@ -597,7 +597,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  Curl_ssl_scache_unlock(data);
 +}
 +
-+/* OT_SessionHasTicket() is new in opentls.library 1.3 (revision 3),
++/* OT_SessionHasTicket() is new in gfopentls.library 1.3 (revision 3),
 +   which is also the first with TLS 1.3 */
 +static bool ot_has_ticket_call(void)
 +{
@@ -655,21 +655,21 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +
 +  if(ssl_config->primary.clientcert || ssl_config->primary.cert_blob ||
 +     ssl_config->primary.key || ssl_config->primary.key_blob) {
-+    failf(data, "OpenTLS: client certificates are not supported");
++    failf(data, "GFOpenTLS: client certificates are not supported");
 +    return CURLE_NOT_BUILT_IN;
 +  }
 +  if(!conn_config->verifypeer && conn_config->verifyhost) {
-+    /* OpenTLS checks the host name only together with the chain */
-+    failf(data, "OpenTLS: CURLOPT_SSL_VERIFYHOST without "
++    /* GFOpenTLS checks the host name only together with the chain */
++    failf(data, "GFOpenTLS: CURLOPT_SSL_VERIFYHOST without "
 +          "CURLOPT_SSL_VERIFYPEER is not supported; turn both off");
 +    return CURLE_NOT_BUILT_IN;
 +  }
 +  if(conn_config->verifystatus) {
-+    failf(data, "OpenTLS: certificate status (OCSP) is not supported");
++    failf(data, "GFOpenTLS: certificate status (OCSP) is not supported");
 +    return CURLE_SSL_INVALIDCERTSTATUS;
 +  }
 +  if(!ot_open_library()) {
-+    failf(data, "OpenTLS: opentls.library 1.2 or newer will not open");
++    failf(data, "GFOpenTLS: gfopentls.library 1.2 or newer will not open");
 +    return CURLE_SSL_ENGINE_INITFAILED;
 +  }
 +
@@ -680,7 +680,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  backend->conn = OT_NewConnection(backend->entry->ctx,
 +                                   (CONST_STRPTR)hostname, &err);
 +  if(!backend->conn) {
-+    failf(data, "OpenTLS: no connection for %s: %s", hostname,
++    failf(data, "GFOpenTLS: no connection for %s: %s", hostname,
 +          (const char *)OT_ErrorString(err));
 +    return err == OTERR_NOMEM ? CURLE_OUT_OF_MEMORY : CURLE_SSL_CONNECT_ERROR;
 +  }
@@ -770,7 +770,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +    bool resumed = OT_SessionResumed(backend->conn) == 1;
 +    size_t alpn_len = alpn ? strlen(alpn) : 0;
 +
-+    infof(data, "OpenTLS: %s handshake done, %s, cipher %s",
++    infof(data, "GFOpenTLS: %s handshake done, %s, cipher %s",
 +          proto == OT_TLS13 ? "TLSv1.3" : proto == OT_TLS12 ? "TLSv1.2" :
 +          proto == OT_TLS11 ? "TLSv1.1" : "TLSv1.0",
 +          resumed ? "session resumed" : "full handshake",
@@ -972,8 +972,8 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +  if(ot_open_library())
 +    v = OT_Version();
 +  if(!v)
-+    return curl_msnprintf(buffer, size, "OpenTLS");
-+  return curl_msnprintf(buffer, size, "OpenTLS/%lu.%lu",
++    return curl_msnprintf(buffer, size, "GFOpenTLS");
++  return curl_msnprintf(buffer, size, "GFOpenTLS/%lu.%lu",
 +                        (unsigned long)(v >> 16),
 +                        (unsigned long)(v & 0xFFFF));
 +}
@@ -1077,7 +1077,7 @@ diff -ruN a/lib/vtls/vtls.c b/lib/vtls/vtls.c
  #include "vtls/schannel.h"       /* Schannel SSPI version */
  #include "vtls/mbedtls.h"        /* mbedTLS versions */
  #include "vtls/rustls.h"         /* Rustls versions */
-+#include "vtls/opentls.h"        /* OpenTLS versions */
++#include "vtls/opentls.h"        /* GFOpenTLS versions */
  
  #include "slist.h"
  #include "curl_trc.h"

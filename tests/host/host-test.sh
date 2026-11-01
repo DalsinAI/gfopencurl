@@ -1,8 +1,8 @@
 #!/bin/sh
-# openamigacurl host test: curl with patches/ applied, OpenTLS's host build
+# openamigacurl host test: curl with patches/ applied, GFOpenTLS's host build
 # and nghttp2, on Linux, against local HTTPS servers (HTTP/1.1, and HTTP/2
 # through tests/host/h2_server.c), over TLS 1.2 and TLS 1.3. It checks the
-# OpenTLS backend's own code (lib/vtls/opentls.c) and HTTP/2 over it; the
+# GFOpenTLS backend's own code (lib/vtls/opentls.c) and HTTP/2 over it; the
 # Amiga build is build.sh's.
 # MIT, Copyright (c) 2026 AmigaChrome Team.
 #
@@ -65,7 +65,7 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 2 
     -addext subjectAltName=DNS:localhost,IP:127.0.0.1 2>/dev/null
 cp cert.pem cert2.pem
 # 18443 and 18446 are TLS 1.2 only, so the TLS 1.2 tests stay TLS 1.2 now
-# that OpenTLS speaks 1.3; 18444, 18447, 18448 and 18449 are TLS 1.3 only,
+# that GFOpenTLS speaks 1.3; 18444, 18447, 18448 and 18449 are TLS 1.3 only,
 # and 18448 and 18449 send no session tickets.
 python3 "$HERE/tests/host/tls_server.py" 18443 cert.pem key.pem tls12 & S1=$!
 python3 "$HERE/tests/host/tls_server.py" 18444 cert.pem key.pem tls13 & S2=$!
@@ -97,11 +97,11 @@ check "wrong host name with -k"  0 "$r"
 r=0; c -o /dev/null --cacert /dev/null https://localhost:18443/1 2>/dev/null || r=$?
 check "no trusted certificates"  77 "$r"
 check "TLS 1.2 server: TLS 1.2"  "TLSv1.2" \
-    "$(c -v -o /dev/null https://localhost:18443/1 2>&1 | sed -n 's/.*OpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
+    "$(c -v -o /dev/null https://localhost:18443/1 2>&1 | sed -n 's/.*GFOpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
 check "TLS 1.3 server: TLS 1.3"  "TLSv1.3" \
-    "$(c -v -o /dev/null https://localhost:18444/1 2>&1 | sed -n 's/.*OpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
+    "$(c -v -o /dev/null https://localhost:18444/1 2>&1 | sed -n 's/.*GFOpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
 check "1.2 and 1.3 server: TLS 1.3" "TLSv1.3" \
-    "$(c -v -o /dev/null https://localhost:18445/1 2>&1 | sed -n 's/.*OpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
+    "$(c -v -o /dev/null https://localhost:18445/1 2>&1 | sed -n 's/.*GFOpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p')"
 check "TLS 1.3: POST 8 MB"       "$WANT" "$(c --data-binary @up.bin https://localhost:18444/post)"
 check "TLS 1.3: GET 20 MB"       "200 20000000" "$(c -o /dev/null -w '%{http_code} %{size_download}' https://localhost:18444/20000000)"
 r=0; c -o /dev/null --tls-max 1.2 https://localhost:18444/1 2>/dev/null || r=$?
@@ -129,7 +129,7 @@ check "session: a -k session skips no check" "full exit 60" \
 # TLS 1.3 sessions: the server's ticket comes after the handshake, and the
 # backend caches the session once OT_SessionHasTicket() says it has come.
 U3=https://localhost:18444
-v() { sed -n 's/.*OpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p' | tr '\n' ' ' | sed 's/ $//'; }
+v() { sed -n 's/.*GFOpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p' | tr '\n' ' ' | sed 's/ $//'; }
 check "1.3 session: later connections resume" "full resumed resumed" "$(r $U3/1 $N $U3/2 $N $U3/3)"
 check "1.3 session: all of them TLS 1.3" "TLSv1.3 TLSv1.3 TLSv1.3" \
     "$("$CURL" -sS -v $O $U3/1 $N $U3/2 $N $U3/3 2>&1 | v)"
@@ -200,7 +200,7 @@ check "h2 session: h1 server, then h2 server" "full full resumed" "$(r $U/1 $N2 
 H3=https://localhost:18447
 check "h2 over 1.3: GET 20 MB"    "2 200 20000000" "$(c -o /dev/null -w '%{http_version} %{http_code} %{size_download}' $H3/20000000)"
 check "h2 over 1.3: TLS 1.3, ALPN h2" "TLSv1.3 h2" \
-    "$(c -v -o /dev/null $H3/1 2>&1 | sed -n -e 's/.*OpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p' -e 's/.*ALPN: server accepted \(.*\)/\1/p' | tr -d '\r' | tr '\n' ' ' | sed 's/ $//')"
+    "$(c -v -o /dev/null $H3/1 2>&1 | sed -n -e 's/.*GFOpenTLS: \(TLSv1\.[0-9]\) handshake done.*/\1/p' -e 's/.*ALPN: server accepted \(.*\)/\1/p' | tr -d '\r' | tr '\n' ' ' | sed 's/ $//')"
 check "h2 over 1.3: POST 8 MB"   "$WANT" "$(c --data-binary @up.bin $H3/post)"
 m=$(c -Z -w '%header{x-conn}_%{num_connects}\n' -o /dev/null -o /dev/null -o /dev/null -o /dev/null $H3/100000 $H3/200000 $H3/300000 $H3/400000)
 check "h2 over 1.3: 4 parallel on 1 connection" "1 1" \

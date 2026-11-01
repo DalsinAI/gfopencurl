@@ -1,26 +1,26 @@
 #!/bin/sh
-# openamigacurl: curl (libcurl) with OpenTLS and HTTP/2 (nghttp2), built for
+# openamigacurl: curl (libcurl) with GFOpenTLS and HTTP/2 (nghttp2), built for
 # AmigaOS 3.x (68040 + FPU) with the os32-gcc16 compiler (bebbo's amiga-gcc,
 # GCC 16.2, libnix, libpthread). HTTP and HTTPS only.
 # MIT, Copyright (c) 2026 AmigaChrome Team. The library keeps its own licence.
 #
 #   OS32_GCC16   compiler root holding prefix/ and compat/
-#                (default ~/AmigaChrome/stoves/os32-gcc16)
+#                (default ~/AmiCradle/stoves/os32-gcc16)
 #   PREFIX       where include/ and lib/ go (default ./out)
 #   TARBALLS     folder holding the upstream tarballs listed in SOURCES
 #                (default ./tarballs); the script checks their SHA-256
 #   JOBS         parallel jobs for CMake/make builds (default 2)
-#   OPENTLS_INCLUDE  openamigatls's include/ folder: opentls.library's headers
+#   OPENTLS_INCLUDE  openamigatls's include/ folder: gfopentls.library's headers
 #                (default ../openamigatls/include, beside this repository)
 #   TOOLCHAIN_FILE  CMake toolchain file (default cmake/amigaos3-gcc16.cmake)
 #   NDK_INCLUDE  an OS header folder to search after the compiler's own, such
-#                as an OpenNDK Include_H holding the bsdsocket headers (default:
+#                as a GFOpenNDK Include_H holding the bsdsocket headers (default:
 #                none, for a compiler that has its own)
 #
 # usage: ./build.sh
 set -eu
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-S=${OS32_GCC16:-"$HOME/AmigaChrome/stoves/os32-gcc16"}
+S=${OS32_GCC16:-"$HOME/AmiCradle/stoves/os32-gcc16"}
 P=$S/prefix
 OUT=${PREFIX:-"$HERE/out"}
 TARBALLS=${TARBALLS:-"$HERE/tarballs"}
@@ -66,7 +66,7 @@ archive() {
 
 TOOLCHAIN=${TOOLCHAIN_FILE:-"$HERE/cmake/amigaos3-gcc16.cmake"}
 OPENTLS_INC=${OPENTLS_INCLUDE:-"$HERE/../openamigatls/include"}
-[ -f "$OPENTLS_INC/proto/opentls.h" ] || { echo "missing $OPENTLS_INC/proto/opentls.h (set OPENTLS_INCLUDE to openamigatls's include/)"; exit 2; }
+[ -f "$OPENTLS_INC/proto/gfopentls.h" ] || { echo "missing $OPENTLS_INC/proto/gfopentls.h (set OPENTLS_INCLUDE to openamigatls's include/)"; exit 2; }
 OPENTLS_INC=$(CDPATH= cd -- "$OPENTLS_INC" && pwd)
 # zlib (gzip and deflate answers): openamigaimage's, in DEPS_PREFIX (default PREFIX).
 DEPS=${DEPS_PREFIX:-$OUT}
@@ -80,7 +80,7 @@ XFLAGS="-DNDEBUG -DNGHTTP2_STATICLIB -DBUILDING_NGHTTP2 -DHAVE_NETINET_IN_H -I$N
     archive nghttp2 "$NG"/lib/*.c
 mkdir -p "$OUT/include/nghttp2" && cp "$NG"/lib/includes/nghttp2/nghttp2.h "$NG"/lib/includes/nghttp2/nghttp2ver.h "$OUT/include/nghttp2/"
 unpack curl curl-8.22.0.tar.xz f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7
-# patches/: curl's OpenTLS backend (lib/vtls/opentls.c)
+# patches/: curl's GFOpenTLS backend (lib/vtls/opentls.c)
 for p in "$HERE"/patches/*.patch; do patch -s -d "$WORK/curl/curl-8.22.0" -p1 < "$p"; done
 # curl's configure checks link programs, and asks for libnet: an empty one will do.
 mkdir -p "$WORK/stublibs" && "$AR" rcs "$WORK/stublibs/libnet.a"
