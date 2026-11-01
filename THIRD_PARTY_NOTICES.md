@@ -11,7 +11,7 @@ Daniel Stenberg and many contributors; the full text is in `upstream/COPYING`.
 
 - Source: https://curl.se/download/curl-8.22.0.tar.xz, SHA-256
   `f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7`.
-- Changed: `patches/0001-vtls-opentls-backend.patch` adds the OpenTLS backend;
+- Changed: `patches/0001-vtls-opentls-backend.patch` adds the GFOpenTLS backend;
   the changed files stay under curl's licence.
 
 ## nghttp2 1.70.0

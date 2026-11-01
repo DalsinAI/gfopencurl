@@ -1,5 +1,5 @@
 /* openamigacurl host test: a local HTTP/2 server over TLS for the
- * OpenTLS backend, on nghttp2's library (built from the same tarball as the
+ * GFOpenTLS backend, on nghttp2's library (built from the same tarball as the
  * Amiga build's) and the host's OpenSSL.
  *
  *     h2_server PORT CERT KEY [tls13|tls13-notickets]

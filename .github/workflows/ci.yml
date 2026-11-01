@@ -6,17 +6,17 @@ on:
 
 jobs:
   host:
-    # curl with patches/, OpenTLS's host build and nghttp2, against local
+    # curl with patches/, GFOpenTLS's host build and nghttp2, against local
     # HTTPS servers, HTTP/1.1 and HTTP/2 (tests/host/host-test.sh). The Amiga
     # build is build.sh's.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # OpenTLS with TLS 1.3: openamigatls main after #14 (5e62884).
+      # GFOpenTLS with TLS 1.3 and the GFOpen names: openamigatls main after #19 (bc509d4).
       - uses: actions/checkout@v4
         with:
           repository: DalsinAI/openamigatls
-          ref: 5e62884b77f8eb1a5056a3eb4e00d45c11a27eaf
+          ref: bc509d410e306369fa39cb91fe94c3d25cf8b228
           path: openamigatls
       - name: Fetch curl and nghttp2 (SOURCES)
         run: |
@@ -30,16 +30,16 @@ jobs:
         run: OPENTLS_SRC=openamigatls JOBS=4 SANITIZE=1 tests/host/host-test.sh
 
   amiga:
-    # libcurl, nghttp2 and curltest for the 68040 with the OpenAmigaGCC
-    # release and OpenNDK's network headers (tests/amiga/ci-build.sh)
+    # libcurl, nghttp2 and curltest for the 68040 with the GFOpenAmigaGCC
+    # release and GFOpenNDK's network headers (tests/amiga/ci-build.sh)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # the TLS 1.3 headers: openamigatls main after #14 (5e62884), as in the host job
+      # the TLS 1.3 headers, renamed (gfopentls.h): openamigatls main after #19 (bc509d4), as in the host job
       - uses: actions/checkout@v4
         with:
           repository: DalsinAI/openamigatls
-          ref: 5e62884b77f8eb1a5056a3eb4e00d45c11a27eaf
+          ref: bc509d410e306369fa39cb91fe94c3d25cf8b228
           path: openamigatls
       - uses: actions/checkout@v4
         with:

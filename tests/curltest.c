@@ -1,4 +1,4 @@
-/* openamigacurl smoke test: fetch an address over HTTP or HTTPS (OpenTLS). */
+/* openamigacurl smoke test: fetch an address over HTTP or HTTPS (GFOpenTLS). */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,10 +10,10 @@
 #include <amitcp/socketbasetags.h>
 
 /* The task's own bsdsocket base: each task that calls curl opens its own and
- * points its errno at the C library's. curl opens opentls.library itself. */
+ * points its errno at the C library's. curl opens gfopentls.library itself. */
 struct Library *SocketBase;
 
-/* An OpenTLS handshake needs 16 KB of stack, and curl calls it from deep in
+/* A GFOpenTLS handshake needs 16 KB of stack, and curl calls it from deep in
  * its own: libnix gives main() this much. */
 unsigned long __stack = 65536;
 
