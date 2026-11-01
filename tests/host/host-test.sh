@@ -4,7 +4,7 @@
 # through tests/host/h2_server.c), over TLS 1.2 and TLS 1.3. It checks the
 # GFOpenTLS backend's own code (lib/vtls/opentls.c) and HTTP/2 over it; the
 # Amiga build is build.sh's.
-# MIT, Copyright (c) 2026 AmigaChrome Team.
+# MIT, Copyright (c) 2026 AmiCradle Team.
 #
 #   OPENTLS_SRC  an openamigatls checkout (default ../openamigatls)
 #   TARBALLS     folder holding the upstream tarballs listed in SOURCES

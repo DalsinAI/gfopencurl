@@ -1,7 +1,7 @@
 #!/bin/sh
 # openamigacurl in the cloud: libcurl (with nghttp2) and curltest for the 68040 with the
 # GFOpenAmigaGCC release toolchain and GFOpenNDK, no vendor headers anywhere.
-# MIT, Copyright (c) 2026 AmigaChrome Team.
+# MIT, Copyright (c) 2026 AmiCradle Team.
 #
 #   TOOLCHAIN_DIR  an unpacked openamigagcc-*-x86_64-linux folder
 #   OPENNDK        a GFOpenNDK folder holding the bsdsocket headers

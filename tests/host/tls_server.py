@@ -11,7 +11,7 @@ older than TLS 1.3 (OpenSSL sends two session tickets after each TLS 1.3
 handshake); "tls13-notickets" is "tls13" that sends no tickets; "http11"
 makes it answer ALPN with http/1.1 only (without it, the server ignores
 ALPN). Without one it speaks TLS 1.2 and 1.3.
-MIT, Copyright (c) 2026 AmigaChrome Team."""
+MIT, Copyright (c) 2026 AmiCradle Team."""
 import hashlib
 import http.server
 import socketserver

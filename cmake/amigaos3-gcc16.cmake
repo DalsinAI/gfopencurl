@@ -1,6 +1,6 @@
 # openamigacurl: CMake cross toolchain for AmigaOS 3.x with the os32-gcc16
 # stove (GFOpenAmigaGCC 16.2, libnix, libpthread). C only.
-# MIT, Copyright (c) 2026 AmigaChrome Team.
+# MIT, Copyright (c) 2026 AmiCradle Team.
 #   OS32_GCC16      the stove root, holding prefix/ (default ~/AmiCradle/stoves/os32-gcc16)
 #   OS32_CPU_FLAGS  CPU flags (default 68040 with FPU)
 if (DEFINED ENV{OS32_GCC16})

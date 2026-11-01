@@ -161,7 +161,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 + *                            | (__| |_| |  _ <| |___
 + *                             \___|\___/|_| \_\_____|
 + *
-+ * Copyright (C) AmigaChrome Team
++ * Copyright (C) AmiCradle Team
 + *
 + * This software is licensed as described in the file COPYING, which
 + * you should have received as part of this distribution. The terms
@@ -1046,7 +1046,7 @@ diff -ruN a/lib/vtls/opentls.h b/lib/vtls/opentls.h
 + *                            | (__| |_| |  _ <| |___
 + *                             \___|\___/|_| \_\_____|
 + *
-+ * Copyright (C) AmigaChrome Team
++ * Copyright (C) AmiCradle Team
 + *
 + * This software is licensed as described in the file COPYING, which
 + * you should have received as part of this distribution. The terms

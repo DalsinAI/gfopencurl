@@ -2,7 +2,7 @@
 # openamigacurl: curl (libcurl) with GFOpenTLS and HTTP/2 (nghttp2), built for
 # AmigaOS 3.x (68040 + FPU) with the os32-gcc16 compiler (bebbo's amiga-gcc,
 # GCC 16.2, libnix, libpthread). HTTP and HTTPS only.
-# MIT, Copyright (c) 2026 AmigaChrome Team. The library keeps its own licence.
+# MIT, Copyright (c) 2026 AmiCradle Team. The library keeps its own licence.
 #
 #   OS32_GCC16   compiler root holding prefix/ and compat/
 #                (default ~/AmiCradle/stoves/os32-gcc16)
