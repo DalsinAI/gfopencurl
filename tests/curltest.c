@@ -1,4 +1,4 @@
-/* openamigacurl smoke test: fetch an address over HTTP or HTTPS (GFOpenTLS). */
+/* gfopencurl smoke test: fetch an address over HTTP or HTTPS (GFOpenTLS). */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

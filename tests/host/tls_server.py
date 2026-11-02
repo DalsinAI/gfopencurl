@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""openamigacurl host test: a local HTTPS server for the GFOpenTLS backend.
+"""gfopencurl host test: a local HTTPS server for the GFOpenTLS backend.
 
     tls_server.py PORT CERT KEY [tls12|tls13|tls13-notickets|http11]
 

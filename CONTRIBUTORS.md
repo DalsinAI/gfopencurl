@@ -2,7 +2,7 @@
 
 ## Creator and maintainer
 
-- **SacredTrees** ([@SacredTrees](https://github.com/SacredTrees)): created and maintains this AmigaOS port of curl (openamigacurl).
+- **SacredTrees** ([@SacredTrees](https://github.com/SacredTrees)): created and maintains this AmigaOS port of curl (gfopencurl).
 
 ## The AmiCradle team
 
@@ -38,7 +38,7 @@ Only curl's and nghttp2's licence notices are committed here; their source is no
 ## Used at build time, not included
 
 - **AmiSSL 5 SDK**, curl's TLS library on AmigaOS, under its own licence.
-- **zlib** (from openamigaimage), zlib licence.
+- **zlib** (from gfopenimage), zlib licence.
 - **bebbo's amiga-gcc** (GCC 16.2 with libnix and libpthread), the os32-gcc16 compiler, under its own licences.
 
 Amiga, AmigaOS and other product names are trademarks of their respective

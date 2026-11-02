@@ -1,11 +1,11 @@
 #!/bin/sh
-# openamigacurl in the cloud: libcurl (with nghttp2) and curltest for the 68040 with the
+# gfopencurl in the cloud: libcurl (with nghttp2) and curltest for the 68040 with the
 # GFOpenAmigaGCC release toolchain and GFOpenNDK, no vendor headers anywhere.
 # MIT, Copyright (c) 2026 AmiCradle Team.
 #
 #   TOOLCHAIN_DIR  an unpacked openamigagcc-*-x86_64-linux folder
 #   OPENNDK        a GFOpenNDK folder holding the bsdsocket headers
-#   OPENTLS_SRC    an openamigatls checkout (default ../openamigatls)
+#   OPENTLS_SRC    a gfopentls checkout (default ../gfopentls)
 #   TARBALLS       holds curl-8.22.0.tar.xz, nghttp2-1.70.0.tar.xz and
 #                  zlib-1.3.1.tar.xz (default ./tarballs); build.sh checks
 #                  each one's SHA-256 against SOURCES' sums
@@ -15,7 +15,7 @@ set -eu
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 TC=$(CDPATH= cd -- "${TOOLCHAIN_DIR:?set TOOLCHAIN_DIR}" && pwd)
 NDK=$(CDPATH= cd -- "${OPENNDK:?set OPENNDK}" && pwd)
-OT=$(CDPATH= cd -- "${OPENTLS_SRC:-$HERE/../openamigatls}" && pwd)
+OT=$(CDPATH= cd -- "${OPENTLS_SRC:-$HERE/../gfopentls}" && pwd)
 TARBALLS=${TARBALLS:-"$HERE/tarballs"}
 W="$HERE/work/ci"
 mkdir -p "$W/stove" "$W/deps/lib" "$W/deps/include"
@@ -23,7 +23,7 @@ ln -sfn "$TC" "$W/stove/prefix"
 CC="$TC/bin/m68k-amigaos-gcc"
 CPU="-m68040 -m68881 -mcrt=nix20"
 
-# zlib, which build.sh otherwise takes from openamigaimage
+# zlib, which build.sh otherwise takes from gfopenimage
 t="$TARBALLS/zlib-1.3.1.tar.xz"
 echo "38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32  $t" | sha256sum -c - >/dev/null \
     || { echo "SHA-256 mismatch or missing: $t"; exit 2; }

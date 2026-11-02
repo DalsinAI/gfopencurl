@@ -10,7 +10,7 @@ nghttp2 1.70.0 (HTTP/2; MIT licence, see THIRD_PARTY_NOTICES.md)
   from:   https://github.com/nghttp2/nghttp2/releases/download/v1.70.0/nghttp2-1.70.0.tar.xz
   sha256: e05cb1388eaca3830aded4ccf20044b6e1ac1a61411dcca11b0437c4285c8bc2
 
-zlib 1.3.1 (tests/amiga/ci-build.sh only; build.sh takes openamigaimage's)
+zlib 1.3.1 (tests/amiga/ci-build.sh only; build.sh takes gfopenimage's)
   file:   zlib-1.3.1.tar.xz
   from:   https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.xz
   sha256: 38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32

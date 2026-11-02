@@ -1,5 +1,5 @@
 #!/bin/sh
-# openamigacurl: curl (libcurl) with GFOpenTLS and HTTP/2 (nghttp2), built for
+# gfopencurl: curl (libcurl) with GFOpenTLS and HTTP/2 (nghttp2), built for
 # AmigaOS 3.x (68040 + FPU) with the os32-gcc16 compiler (bebbo's amiga-gcc,
 # GCC 16.2, libnix, libpthread). HTTP and HTTPS only.
 # MIT, Copyright (c) 2026 AmiCradle Team. The library keeps its own licence.
@@ -10,8 +10,8 @@
 #   TARBALLS     folder holding the upstream tarballs listed in SOURCES
 #                (default ./tarballs); the script checks their SHA-256
 #   JOBS         parallel jobs for CMake/make builds (default 2)
-#   OPENTLS_INCLUDE  openamigatls's include/ folder: gfopentls.library's headers
-#                (default ../openamigatls/include, beside this repository)
+#   OPENTLS_INCLUDE  gfopentls's include/ folder: gfopentls.library's headers
+#                (default ../gfopentls/include, beside this repository)
 #   TOOLCHAIN_FILE  CMake toolchain file (default cmake/amigaos3-gcc16.cmake)
 #   NDK_INCLUDE  an OS header folder to search after the compiler's own, such
 #                as a GFOpenNDK Include_H holding the bsdsocket headers (default:
@@ -65,12 +65,12 @@ archive() {
 }
 
 TOOLCHAIN=${TOOLCHAIN_FILE:-"$HERE/cmake/amigaos3-gcc16.cmake"}
-OPENTLS_INC=${OPENTLS_INCLUDE:-"$HERE/../openamigatls/include"}
-[ -f "$OPENTLS_INC/proto/gfopentls.h" ] || { echo "missing $OPENTLS_INC/proto/gfopentls.h (set OPENTLS_INCLUDE to openamigatls's include/)"; exit 2; }
+OPENTLS_INC=${OPENTLS_INCLUDE:-"$HERE/../gfopentls/include"}
+[ -f "$OPENTLS_INC/proto/gfopentls.h" ] || { echo "missing $OPENTLS_INC/proto/gfopentls.h (set OPENTLS_INCLUDE to gfopentls's include/)"; exit 2; }
 OPENTLS_INC=$(CDPATH= cd -- "$OPENTLS_INC" && pwd)
-# zlib (gzip and deflate answers): openamigaimage's, in DEPS_PREFIX (default PREFIX).
+# zlib (gzip and deflate answers): gfopenimage's, in DEPS_PREFIX (default PREFIX).
 DEPS=${DEPS_PREFIX:-$OUT}
-[ -f "$DEPS/lib/libz.a" ] || { echo "missing $DEPS/lib/libz.a (zlib, from openamigaimage)"; exit 2; }
+[ -f "$DEPS/lib/libz.a" ] || { echo "missing $DEPS/lib/libz.a (zlib, from gfopenimage)"; exit 2; }
 # nghttp2 (HTTP/2): its library only (lib/), no programs. It is portable C with
 # no byte-order or word-size assumptions of its own; it takes htonl() and
 # friends from <netinet/in.h>, which on the 68k are no-ops.

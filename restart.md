@@ -1,10 +1,10 @@
-# Restart: openamigacurl
+# Restart: gfopencurl
 
 _Written 6 October 2026 at about 23:55 UTC, while all work is paused on @SacredTrees's word (23:28 UTC). Read this first when work resumes; the newest capsule and the live PR list win if they disagree._
 
 ## 20 October 2026: TLS 1.3 sessions
 
-With GFOpenTLS 1.3 (openamigatls #14) curl speaks TLS 1.3, and the backend caches a TLS 1.3 session only once `OT_SessionHasTicket()` (new in #14) says its ticket has come; a connection that gets no ticket caches nothing. CI builds GFOpenTLS from openamigatls main at #14's merge commit (5e62884).
+With GFOpenTLS 1.3 (gfopentls #14) curl speaks TLS 1.3, and the backend caches a TLS 1.3 session only once `OT_SessionHasTicket()` (new in #14) says its ticket has come; a connection that gets no ticket caches nothing. CI builds GFOpenTLS from gfopentls main at #14's merge commit (5e62884).
 
 ## 20 October 2026: slim, and HTTP/2
 
@@ -16,7 +16,7 @@ The GFOpenTLS backend resumes TLS sessions through curl's own session cache (one
 
 ## 19 October 2026: AmiSSL out, GFOpenTLS in
 
-On @SacredTrees's decision of 19 October (GFOpenTLS everywhere), curl's HTTPS now goes through gfopentls.library: `patches/0001-vtls-opentls-backend.patch` adds `lib/vtls/opentls.c` and `CURL_USE_OPENTLS`, and build.sh uses it. `tests/host/host-test.sh` (CI) passes on Linux, plain and under ASan/UBSan. The 68040 build runs in CI (`tests/amiga/ci-build.sh`) against GFOpenNDK's open bsdsocket headers (openamigasocket #24, openamigasdk #18; move the openamigasdk pin in ci.yml once #18 merges). Next: `curltest` on an instance, then GFOpenBrowser's `scripts/build-webcore.sh` off AmiSSL. Team 2 owns this repo's TLS work.
+On @SacredTrees's decision of 19 October (GFOpenTLS everywhere), curl's HTTPS now goes through gfopentls.library: `patches/0001-vtls-opentls-backend.patch` adds `lib/vtls/opentls.c` and `CURL_USE_OPENTLS`, and build.sh uses it. `tests/host/host-test.sh` (CI) passes on Linux, plain and under ASan/UBSan. The 68040 build runs in CI (`tests/amiga/ci-build.sh`) against GFOpenNDK's open bsdsocket headers (gfopensocket #24, gfopensdk #18; move the gfopensdk pin in ci.yml once #18 merges). Next: `curltest` on an instance, then GFOpenBrowser's `scripts/build-webcore.sh` off AmiSSL. Team 2 owns this repo's TLS work.
 
 ## What this repo is
 
@@ -28,7 +28,7 @@ Stable: it builds and GFOpenBrowser links it. Only the CONTRIBUTORS.md pass land
 
 ## Merged lately
 
-- #1 (85265f7, 2026-10-06): Credit who made openamigacurl: CONTRIBUTORS.md
+- #1 (85265f7, 2026-10-06): Credit who made gfopencurl: CONTRIBUTORS.md
 
 ## Open pull requests
 
@@ -48,8 +48,8 @@ JSC thread (GFOpenBrowser).
 
 ## Capsules
 
-Restart capsules for this repo's workstreams, in amigachrome's `capjumps/` shelf:
+Restart capsules for this repo's workstreams, in amicradle's `capjumps/` shelf:
 
-- [`20261006_AmigaChrome_OpenBrowser_JSC_Restart_Capsule.zip`](https://github.com/DalsinAI/amigachrome/tree/main/capjumps)
+- [`20261006_AmigaChrome_OpenBrowser_JSC_Restart_Capsule.zip`](https://github.com/DalsinAI/amicradle/tree/main/capjumps)
 
 Team rules that still hold: commits as SacredTrees with no co-author lines; third-party code only on "yes with review" (licence checked, commit and sha256 pinned, fetched at build, never committed); deploys with deploy_dev.py only, on a typed line.

@@ -1,4 +1,4 @@
-/* openamigacurl host test: a local HTTP/2 server over TLS for the
+/* gfopencurl host test: a local HTTP/2 server over TLS for the
  * GFOpenTLS backend, on nghttp2's library (built from the same tarball as the
  * Amiga build's) and the host's OpenSSL.
  *

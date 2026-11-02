@@ -31,7 +31,7 @@ diff -ruN a/CMakeLists.txt b/CMakeLists.txt
  endif()
  
 +if(CURL_USE_OPENTLS)
-+  # gfopentls.library's headers (openamigatls include/); on hosts other than
++  # gfopentls.library's headers (gfopentls include/); on hosts other than
 +  # AmigaOS, OPENTLS_LIBRARY names its host build (libopentls.a).
 +  set(OPENTLS_INCLUDE_DIR "" CACHE PATH "GFOpenTLS include directory")
 +  set(OPENTLS_LIBRARY "" CACHE STRING "GFOpenTLS host libraries")
@@ -180,7 +180,7 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
 +
 +/*
 + * Source file for the GFOpenTLS backend: gfopentls.library, the GFOpenAmiga
-+ * platform's TLS client (BearSSL inside). https://github.com/DalsinAI/openamigatls
++ * platform's TLS client (BearSSL inside). https://github.com/DalsinAI/gfopentls
 + *
 + * GFOpenTLS moves its bytes through an I/O hook, so the TLS records go
 + * through the connection filter below this one, as with every other
