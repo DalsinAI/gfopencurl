@@ -1,12 +1,12 @@
-# openamigacurl
+# gfopencurl
 
 curl (libcurl) with GFOpenTLS and HTTP/2 for AmigaOS 3.x on 68k, built as static
-link libraries for GCC programs. HTTP and HTTPS only. Part of the [GFOpenAmiga](https://github.com/DalsinAI/openamiga)
-ports, made for [GFOpenBrowser](https://github.com/DalsinAI/openamigabrowser),
+link libraries for GCC programs. HTTP and HTTPS only. Part of the [GFOpenAmiga](https://github.com/DalsinAI/gfopenamiga)
+ports, made for [GFOpenBrowser](https://github.com/DalsinAI/gfopenbrowser),
 the WebKit browser for AmigaOS 3.2.
 
-**Status, 20 October 2026:** TLS 1.3, with its sessions resumed, through GFOpenTLS 1.3 (openamigatls #14, not merged yet; it needs `OT_SessionHasTicket()`, at #14's aaf3319). HTTP/2 through nghttp2, and a slimmer curl: only HTTP, HTTPS and what GFOpenBrowser uses (below). Since 19 October, HTTPS goes through
-[GFOpenTLS](https://github.com/DalsinAI/openamigatls) (`gfopentls.library`), the
+**Status, 20 October 2026:** TLS 1.3, with its sessions resumed, through GFOpenTLS 1.3 (gfopentls #14, not merged yet; it needs `OT_SessionHasTicket()`, at #14's aaf3319). HTTP/2 through nghttp2, and a slimmer curl: only HTTP, HTTPS and what GFOpenBrowser uses (below). Since 19 October, HTTPS goes through
+[GFOpenTLS](https://github.com/DalsinAI/gfopentls) (`gfopentls.library`), the
 Team's own TLS, in place of AmiSSL. The GFOpenTLS backend passes its host tests
 (below), and the 68040 build runs in CI; a run of `curltest` on an
 instance is still to do.
@@ -48,9 +48,9 @@ notices.
 ## Building
 
 You need the os32-gcc16 compiler (GFOpenAmigaGCC 16.2.0-open2 with libnix
-and libpthread; see DalsinAI/openamigabrowser `stove/`), the upstream
+and libpthread; see DalsinAI/gfopenbrowser `stove/`), the upstream
 tarballs from [SOURCES](SOURCES) in `tarballs/`, and an
-[openamigatls](https://github.com/DalsinAI/openamigatls) checkout beside this
+[gfopentls](https://github.com/DalsinAI/gfopentls) checkout beside this
 one for `gfopentls.library`'s headers (or set `OPENTLS_INCLUDE` to its
 `include/`). Then:
 
@@ -97,7 +97,7 @@ it.
 
 ### TLS 1.3 and its sessions, on Linux (20 October 2026)
 
-`tests/host/host-test.sh` builds GFOpenTLS 1.3 (openamigatls main after
+`tests/host/host-test.sh` builds GFOpenTLS 1.3 (gfopentls main after
 #14, 5e62884) and adds TLS 1.3-only servers: `tls_server.py` with
 OpenSSL's two tickets per handshake, the same with no tickets, and
 `h2_server.c` over TLS 1.3, with and without tickets. It checks that a TLS 1.3
@@ -140,7 +140,7 @@ nghttp2 and checks that curl has HTTP/2, only HTTP and HTTPS, and that
 ### GFOpenTLS backend, on Linux (19 October 2026)
 
 `tests/host/host-test.sh` builds curl with `patches/` against GFOpenTLS's host
-build (openamigatls e7c0e2d) and runs it against a local HTTPS server; CI runs
+build (gfopentls e7c0e2d) and runs it against a local HTTPS server; CI runs
 it on every push, once plainly and once with AddressSanitizer and UBSan. It
 checks an 8 MB upload and a 20 MB download byte for byte, a server that closes
 without close_notify, connection reuse, changing CA files, a wrong host name
@@ -157,7 +157,7 @@ right SHA-256.
 
 The 68040 build runs in CI too (`tests/amiga/ci-build.sh`): libcurl and
 `curltest` with GFOpenAmigaGCC 16.2.0-open3 and GFOpenNDK, whose bsdsocket headers
-are GFOpenSocket's own (openamigasdk #18), with no vendor header anywhere. curl's
+are GFOpenSocket's own (gfopensdk #18), with no vendor header anywhere. curl's
 own CMake toolchain file is `cmake/amigaos3-gcc16.cmake`. `curltest` is still
 to be run on an instance.
 
@@ -183,7 +183,7 @@ It has not yet been run on real Amiga hardware.
 ## Known issues
 
 - Only HTTP and HTTPS are built. HTTP/2 is HTTPS only (by ALPN); no HTTP/3.
-- TLS 1.3 needs `gfopentls.library` 1.3 (openamigatls #14). No 0-RTT data.
+- TLS 1.3 needs `gfopentls.library` 1.3 (gfopentls #14). No 0-RTT data.
 
 ## Licence
 

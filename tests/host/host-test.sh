@@ -1,12 +1,12 @@
 #!/bin/sh
-# openamigacurl host test: curl with patches/ applied, GFOpenTLS's host build
+# gfopencurl host test: curl with patches/ applied, GFOpenTLS's host build
 # and nghttp2, on Linux, against local HTTPS servers (HTTP/1.1, and HTTP/2
 # through tests/host/h2_server.c), over TLS 1.2 and TLS 1.3. It checks the
 # GFOpenTLS backend's own code (lib/vtls/opentls.c) and HTTP/2 over it; the
 # Amiga build is build.sh's.
 # MIT, Copyright (c) 2026 AmiCradle Team.
 #
-#   OPENTLS_SRC  an openamigatls checkout (default ../openamigatls)
+#   OPENTLS_SRC  a gfopentls checkout (default ../gfopentls)
 #   TARBALLS     folder holding the upstream tarballs listed in SOURCES
 #                (default ./tarballs); the script checks their SHA-256
 #   SANITIZE     1: build with AddressSanitizer and UBSan
@@ -15,7 +15,7 @@
 # usage: tests/host/host-test.sh
 set -eu
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-OT=$(CDPATH= cd -- "${OPENTLS_SRC:-$HERE/../openamigatls}" && pwd)
+OT=$(CDPATH= cd -- "${OPENTLS_SRC:-$HERE/../gfopentls}" && pwd)
 TARBALLS=${TARBALLS:-"$HERE/tarballs"}
 JOBS=${JOBS:-4}
 W="$HERE/work/host"
