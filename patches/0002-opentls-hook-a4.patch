@@ -1,0 +1,56 @@
+diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
+--- a/lib/vtls/opentls.c
++++ b/lib/vtls/opentls.c
+@@ -151,12 +151,39 @@
+ }
+ 
+ #ifdef __amigaos__
++/* the hook's body, called with the program's A4 (below) */
++static ULONG ot_hook_body(struct Hook *hook, struct OTIOMessage *msg)
++{
++  return (ULONG)ot_io(hook->h_Data, msg);
++}
++
++/* gfopentls.library calls the hook from its own code, where A4 is any
++ * register the library likes. Code built -fbaserel32 (openwxtoolkit.library's
++ * wx module, whose data A4 points at) needs its own A4 back, so the way in
++ * puts back the A4 the hook was set with (kept in h_SubEntry by
++ * ot_init_conn) for the body and the library's after. In any other build A4
++ * is an ordinary saved register and this is two moves more. */
+ static ULONG ot_hook_entry(register struct Hook *hook __asm("a0"),
+                            register APTR object __asm("a2"),
+                            register struct OTIOMessage *msg __asm("a1"))
+ {
++  register ULONG r __asm("d0");
++  register struct Hook *h __asm("a0") = hook;
++  register struct OTIOMessage *m __asm("a1") = msg;
++  register ULONG (*body)(struct Hook *, struct OTIOMessage *) __asm("a3") =
++    ot_hook_body;
+   (void)object;
+-  return (ULONG)ot_io(hook->h_Data, msg);
++  __asm volatile("move.l %%a4,-(%%sp)\n\t"
++                 "move.l 12(%%a0),%%a4\n\t"
++                 "move.l %%a1,-(%%sp)\n\t"
++                 "move.l %%a0,-(%%sp)\n\t"
++                 "jsr (%%a3)\n\t"
++                 "addq.l #8,%%sp\n\t"
++                 "move.l (%%sp)+,%%a4"
++                 : "=r"(r), "+r"(h), "+r"(m)
++                 : "r"(body)
++                 : "d1", "cc", "memory");
++  return r;
+ }
+ #else
+ static ULONG ot_hook_entry(struct Hook *hook, APTR object, APTR msg)
+@@ -532,6 +559,11 @@
+   memset(&backend->hook, 0, sizeof(backend->hook));
+ #ifdef __amigaos__
+   backend->hook.h_Entry = (HOOKFUNC)(void (*)(void))ot_hook_entry;
++  {
++    APTR a4;
++    __asm volatile("move.l %%a4,%0" : "=r"(a4));
++    backend->hook.h_SubEntry = (HOOKFUNC)(void (*)(void))a4;
++  }
+ #else
+   backend->hook.h_Entry = ot_hook_entry;
+ #endif
