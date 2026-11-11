@@ -47,9 +47,9 @@ diff -ruN a/lib/vtls/opentls.c b/lib/vtls/opentls.c
  #ifdef __amigaos__
    backend->hook.h_Entry = (HOOKFUNC)(void (*)(void))ot_hook_entry;
 +  {
-+    APTR a4;
++    ULONG a4;
 +    __asm volatile("move.l %%a4,%0" : "=r"(a4));
-+    backend->hook.h_SubEntry = (HOOKFUNC)(void (*)(void))a4;
++    backend->hook.h_SubEntry = (HOOKFUNC)a4;
 +  }
  #else
    backend->hook.h_Entry = ot_hook_entry;
